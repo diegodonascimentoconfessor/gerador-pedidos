@@ -30,20 +30,34 @@ const ico=(k,cls)=>`<svg class="i ${cls||''}" viewBox="0 0 48 48"><use href="#s-
 /* ---- parser de texto solto ---- */
 function parse(t){
  const isN=x=>/^[\d.,]+$/.test(x)&&/\d/.test(x);
- return t.split(/\r?\n/).map(l=>l.trim()).filter(l=>l&&!/^(valor\s+)?total\b/i.test(l)).map(l=>{
+ const L=[];
+ t.split(/\r?\n/).map(l=>l.trim()).forEach(l=>{
+  if(!l||/^(valor\s+)?total\b/i.test(l))return;
+  if(L.length&&/^valor\b/i.test(l))L[L.length-1]+=' '+l; /* linha quebrada no celular */
+  else L.push(l);
+ });
+ return L.map(l=>{
   l=l.replace(/R\$\s*/gi,'');
-  const cols=l.split(/\t+/).map(c=>c.trim()).filter(Boolean);
+  const mv=l.match(/\bvalor\s*:?\s*([\d.,]*\d)/i),mt=l.match(/\btotal\s*:?\s*([\d.,]*\d)/i);
+  const ki=l.search(/\b(valor|total)\b/i);
   let u=null,txt=l;
-  if(cols.length>=2&&isN(cols[1])){txt=cols[0];u=num(cols[1])}
+  if(ki>0){txt=l.slice(0,ki).trim();if(mv)u=num(mv[1])}
+  else{
+   const cols=l.split(/\t+/).map(c=>c.trim()).filter(Boolean);
+   if(cols.length>=2&&isN(cols[1])){txt=cols[0];u=num(cols[1])}
+  }
   let q=1,rest=txt,m=txt.match(/^(\d+)\s*(?:pç\.?|pcs|pct|pc|und|unid\w*|un\.?|cx)?\s+(.+)$/i);
   if(m){q=parseInt(m[1],10);rest=m[2]}
   const tk=rest.split(/\s+/);
   if(u===null){
-   u=0;const a=tk[tk.length-1],b=tk[tk.length-2];
-   if(tk.length>2&&isN(a)&&isN(b)&&Math.abs(q*num(b)-num(a))<0.5){tk.pop();u=num(tk.pop())}
-   else if(tk.length>1&&isN(a))u=num(tk.pop());
+   if(ki>0){u=mt?Math.round(num(mt[1])/q*100)/100:0}
+   else{
+    u=0;const a=tk[tk.length-1],b=tk[tk.length-2];
+    if(tk.length>2&&isN(a)&&isN(b)&&Math.abs(q*num(b)-num(a))<0.5){tk.pop();u=num(tk.pop())}
+    else if(tk.length>1&&isN(a))u=num(tk.pop());
+   }
   }
-  let d=tk.join(' ').replace(/\s*\bvalor\b\s*[\d.,]*\s*$/i,'')
+  let d=tk.join(' ')
    .replace(/\s+\(/g,'(').replace(/\(\s+/g,'(').replace(/\s+\)/g,')')
    .replace(/([\d)])\s*x\s*(\d)/gi,'$1x$2').replace(/\s+/g,' ').trim();
   d=d.charAt(0).toUpperCase()+d.slice(1);
