@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Pedidos e Orçamentos — Ferragens Santa Elisa</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+ <symbol id="s-parafuso" viewBox="0 0 48 48"><path d="M13 5h22v9H13z"/><path d="M18 14h12v28l-6 4-6-4z"/><path d="M18 20h12M18 26h12M18 32h12M18 38h12"/></symbol>
+ <symbol id="s-porca" viewBox="0 0 48 48"><path d="M24 4l17 10v20L24 44 7 34V14z"/><circle cx="24" cy="24" r="7"/></symbol>
+ <symbol id="s-arruela" viewBox="0 0 48 48"><circle cx="24" cy="24" r="19"/><circle cx="24" cy="24" r="7"/></symbol>
+ <symbol id="s-bucha" viewBox="0 0 48 48"><path d="M9 6h30v6H9z"/><path d="M15 12h18l-3 31H18z"/><path d="M16 19h16M17 25h14M17.5 31h13M18 37h12"/></symbol>
+</svg>
+
+<div class="app">
+<!-- ===== EDITOR ===== -->
+<section class="ed">
+ <fieldset><legend>Empresa emitente</legend>
+  <label for="cn">Nome</label><input id="cn">
+  <label for="cs">Slogan</label><input id="cs">
+  <label for="cp">Telefone / contato</label><input id="cp">
+ </fieldset>
+
+ <fieldset><legend>Dados do pedido</legend>
+  <label for="od">Destinatário</label><input id="od">
+  <label for="oc">Cliente</label><input id="oc">
+  <div class="r2"><div><label for="odt">Data</label><input id="odt" type="date"></div>
+  <div><label for="on">Nº do pedido</label><input id="on"></div></div>
+  <label for="ot">Tema do documento</label>
+  <select id="ot"><option value="cls">Clássico Industrial</option><option value="min">Minimalista Limpo</option></select>
+ </fieldset>
+
+ <fieldset><legend>Entrada rápida</legend>
+  <textarea id="qt" rows="5" placeholder="Cole aqui, uma linha por item:&#10;100 pç bucha 6x 10 2,00&#10;200 bucha 8x10 longa 3,00"></textarea>
+  <div class="hint">Formato: quantidade, descrição e valor unitário no final. Sufixos pç, un, cx e pct são ignorados.</div>
+  <div class="bar"><button class="pri" id="bp">Processar e organizar</button><button id="bl">Limpar texto</button></div>
+ </fieldset>
+
+ <fieldset><legend>Itens</legend>
+  <div id="rows"></div>
+  <div class="bar"><button id="ba">+ Adicionar item</button></div>
+  <div class="tot-ed" id="te"></div>
+  <label for="ob">Observações / condições de pagamento</label><textarea id="ob" rows="3"></textarea>
+ </fieldset>
+
+ <fieldset><legend>Pedidos salvos</legend>
+  <select id="hs"></select>
+  <div class="bar"><button class="pri" id="bs">Salvar pedido</button><button id="bc">Carregar</button><button id="bx">Excluir</button><button id="bn">Novo pedido</button></div>
+  <div class="bar"><button id="bi">Imprimir / PDF</button><button id="be">Baixar .html único</button></div>
+ </fieldset>
+</section>
+
+<!-- ===== PRÉ-VISUALIZAÇÃO A4 ===== -->
+<section class="pv" id="pv"><div id="sheet"></div></section>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
